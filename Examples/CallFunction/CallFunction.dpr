@@ -18,32 +18,45 @@ begin
 end;
 
 
-function StringToJSVal(str_value: string): JsValueRef;
+function StringToJSValue(value: string): JsValueRef;
 var
   retCode : JsErrorCode;
 begin
-  retCode := JsPointerToString(PWideChar(str_value), str_value.Length, result);
+  retCode := JsPointerToString(PWideChar(value), value.Length, result);
   if retCode <> JsNoError then
-    raise Exception.Create('Error Message');
+    raise Exception.CreateFmt('Error JsPointerToString with code %d', [Integer(retCode)]);
 end;
 
-function JSValueToString(JsValue: JsValueRef): string;
+function JSValueToString(value: JsValueRef): string;
 var
   retCode: JsErrorCode;
   JsStringValue: JsValueRef;
   outString : PWideChar;
   outStringLength : NativeUInt;
-  resultStr: string;
+  valueType : JsValueType;
 begin
-  retCode := JsConvertValueToString(JsValue, JsStringValue);
+  result := '';
+  retCode := JsGetValueType(value,valueType);
   if retCode <> JsNoError then
-    raise Exception.Create('Error Message');
+  begin
+    raise Exception.CreateFmt('Error JsGetValueType with code %d', [Integer(retCode)]);
+  end;
+
+  if valueType = JsString then
+  begin
+    JsStringValue := value
+  end else
+  begin
+    retCode := JsConvertValueToString(value, JsStringValue);
+    if retCode <> JsNoError then
+      raise Exception.CreateFmt('Error JsConvertValueToString with code %d', [Integer(retCode)]);
+  end;
+
   retCode := JsStringToPointer(JsStringValue, outString, outStringLength);
   if retCode <> JsNoError then
-    raise Exception.Create('Error Message');
-  setLength(resultStr, outStringLength);
-  move(outString[0], resultStr[1], outStringLength * SizeOf(resultStr[1]));
-  result := resultStr;
+    raise Exception.CreateFmt('Error JsStringToPointer with code %d', [Integer(retCode)]);
+  setLength(result, outStringLength);
+  move(outString[0], result[1], outStringLength * SizeOf(WideChar));
 end;
 
 
@@ -51,7 +64,7 @@ function callJsFunction(func_name: string; arguments: TArray<TValue>): TValue;
 var
   retCode : JsErrorCode;
   global : JsValueRef;
-  id: JsPropertyIdRef;
+  idref: JsPropertyIdRef;
   jsFunc : JsValueRef;
   jsArguments : array of JsValueRef;
   arg : TValue;
@@ -64,13 +77,14 @@ var
 begin
   JsGetGlobalObject(global);
 
-  retCode := JsGetPropertyIdFromName(PWideChar(func_name), id);
+  // get property
+  retCode := JsGetPropertyIdFromName(PWideChar(func_name), idref);
   if retCode <> JsNoError then
-    raise Exception.Create('couldn''t get property id.');
+    raise Exception.CreateFmt('Error JsGetPropertyIdFromName with code %d', [Integer(retCode)]);
 
-  retCode := JsGetProperty(global, id, jsFunc);
+  retCode := JsGetProperty(global, idref, jsFunc);
   if retCode <> JsNoError then
-    raise Exception.Create('couldn''t get property.');
+    raise Exception.CreateFmt('Error JsGetProperty with code %d', [Integer(retCode)]);
 
   // convert args
   SetLength(jsArguments, Length(arguments) + 1);
@@ -102,7 +116,7 @@ begin
   end;
 
   // call function
-  retCode := JsCallFunction(jsFunc, jsArguments, Length(jsArguments), retValue);
+  retCode := JsCallFunction(jsFunc, PJsValueRef(jsArguments), Length(jsArguments), retValue);
   if retCode <> JsNoError then
   begin
     raise Exception.Create('couldn''t execute function');
@@ -141,6 +155,7 @@ var
   result: JsValueRef;
 begin
   try
+    ReportMemoryLeaksOnShutdown := true;
 
     script := ' function a(a, b){  return a * b; } ';
 

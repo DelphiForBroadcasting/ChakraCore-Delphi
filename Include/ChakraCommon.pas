@@ -1814,7 +1814,7 @@ function JsGetDataViewStorage(dataView: JsValueRef; var buffer: ChakraBytePtr; v
 /// <returns>
 /// The code <c>JsNoError</c> if the operation succeeded, a failure code otherwise.
 /// </returns>
-function JsCallFunction(func: JsValueRef; arguments: JsValueRef; argumentCount: Word; var result: JsValueRef): JsErrorCode;
+function JsCallFunction(func: JsValueRef; arguments: PJsValueRef; argumentCount: Word; var result: JsValueRef): JsErrorCode;
   stdcall; external CHAKRA_LIB {$IFDEF MACOS} name '_JsCallFunction' {$ENDIF};
 
 /// <summary>
