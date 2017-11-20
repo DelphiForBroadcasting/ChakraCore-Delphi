@@ -1,7 +1,7 @@
 # chakracore-delphi
 
 ChakraCore is the core part of the Chakra Javascript engine that powers Microsoft Edge
-* ChakraCore 1.7.3<br>
+* ChakraCore 1.8.2<br>
 * Development environment - Delphi 10.2 Tokyo<br>
 
 <b>Ported by:</b>

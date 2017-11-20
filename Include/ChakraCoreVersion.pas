@@ -17,8 +17,8 @@
 // ChakraCore version number definitions (used in ChakraCore binary metadata)
 const
   CHAKRA_CORE_MAJOR_VERSION = 1;
-  CHAKRA_CORE_MINOR_VERSION = 7;
-  CHAKRA_CORE_PATCH_VERSION = 3;
+  CHAKRA_CORE_MINOR_VERSION = 8;
+  CHAKRA_CORE_PATCH_VERSION = 2;
   CHAKRA_CORE_VERSION_RELEASE_QFE = 0;
   // Redundant with PATCH_VERSION. Keep this value set to 0.
 
@@ -63,6 +63,6 @@ const
   // Mostly redundant with CHAKRA_CORE_VERSION_RELEASE,
   // but semantically refers to Chakra rather than ChakraCore.
 
-  CHAKRA_VERSION_RELEASE = 0;
+  CHAKRA_VERSION_RELEASE = 1;
 
 {$ENDIF} (* CHAKRA_CORE_VERSION_H *)

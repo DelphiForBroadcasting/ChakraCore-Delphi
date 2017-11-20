@@ -68,7 +68,8 @@ type
     JsModuleHostInfo_HostDefined = $02,
     JsModuleHostInfo_NotifyModuleReadyCallback = $3,
     JsModuleHostInfo_FetchImportedModuleCallback = $4,
-    JsModuleHostInfo_FetchImportedModuleFromScriptCallback = $5
+    JsModuleHostInfo_FetchImportedModuleFromScriptCallback = $5,
+	JsModuleHostInfo_Url = $6
   );
 
 type
@@ -714,6 +715,114 @@ function JsLessThan(object1: JsValueRef; object2: JsValueRef; var result: boolea
 /// </returns>
 function JsLessThanOrEqual(object1: JsValueRef; object2: JsValueRef; var result: boolean): JsErrorCode;
   stdcall; external CHAKRA_LIB {$IFDEF MACOS} name '_JsLessThanOrEqual' {$ENDIF};
+  
+/// <summary>
+///     Gets an object's property.
+/// </summary>
+/// <remarks>
+///     Requires an active script context.
+/// </remarks>
+/// <param name="object">The object that contains the property.</param>
+/// <param name="key">The key (JavascriptString) to the property.</param>
+/// <param name="value">The value of the property.</param>
+/// <returns>
+///     The code <c>JsNoError</c> if the operation succeeded, a failure code otherwise.
+/// </returns>
+function JsObjectGetProperty(obj: JsValueRef; key: JsValueRef; var value: JsValueRef): JsErrorCode;
+  stdcall; external CHAKRA_LIB {$IFDEF MACOS} name '_JsObjectGetProperty' {$ENDIF};
+
+/// <summary>
+///     Puts an object's property.
+/// </summary>
+/// <remarks>
+///     Requires an active script context.
+/// </remarks>
+/// <param name="object">The object that contains the property.</param>
+/// <param name="key">The key (JavascriptString) to the property.</param>
+/// <param name="value">The new value of the property.</param>
+/// <param name="useStrictRules">The property set should follow strict mode rules.</param>
+/// <returns>
+///     The code <c>JsNoError</c> if the operation succeeded, a failure code otherwise.
+/// </returns>
+function JsObjectSetProperty(obj: JsValueRef; key: JsValueRef; value: JsValueRef; useStrictRules: boolean): JsErrorCode;
+  stdcall; external CHAKRA_LIB {$IFDEF MACOS} name '_JsObjectSetProperty' {$ENDIF};
+
+/// <summary>
+///     Determines whether an object has a property.
+/// </summary>
+/// <remarks>
+///     Requires an active script context.
+/// </remarks>
+/// <param name="object">The object that may contain the property.</param>
+/// <param name="key">The key (JavascriptString) to the property.</param>
+/// <param name="hasProperty">Whether the object (or a prototype) has the property.</param>
+/// <returns>
+///     The code <c>JsNoError</c> if the operation succeeded, a failure code otherwise.
+/// </returns>
+function JsObjectHasProperty(obj: JsValueRef; key: JsValueRef; var hasProperty: boolean): JsErrorCode;
+  stdcall; external CHAKRA_LIB {$IFDEF MACOS} name '_JsObjectHasProperty' {$ENDIF};
+
+/// <summary>
+///     Defines a new object's own property from a property descriptor.
+/// </summary>
+/// <remarks>
+///     Requires an active script context.
+/// </remarks>
+/// <param name="object">The object that has the property.</param>
+/// <param name="key">The key (JavascriptString) to the property.</param>
+/// <param name="propertyDescriptor">The property descriptor.</param>
+/// <param name="result">Whether the property was defined.</param>
+/// <returns>
+///     The code <c>JsNoError</c> if the operation succeeded, a failure code otherwise.
+/// </returns>
+function JsObjectDefineProperty(obj: JsValueRef; key: JsValueRef; propertyDescriptor: JsValueRef; var result: boolean): JsErrorCode;
+  stdcall; external CHAKRA_LIB {$IFDEF MACOS} name '_JsObjectDefineProperty' {$ENDIF};
+
+/// <summary>
+///     Deletes an object's property.
+/// </summary>
+/// <remarks>
+///     Requires an active script context.
+/// </remarks>
+/// <param name="object">The object that contains the property.</param>
+/// <param name="key">The key (JavascriptString) to the property.</param>
+/// <param name="useStrictRules">The property set should follow strict mode rules.</param>
+/// <param name="result">Whether the property was deleted.</param>
+/// <returns>
+///     The code <c>JsNoError</c> if the operation succeeded, a failure code otherwise.
+/// </returns>
+function JsObjectDeleteProperty(obj: JsValueRef; key: JsValueRef; useStrictRules: boolean; var result: JsValueRef): JsErrorCode;
+  stdcall; external CHAKRA_LIB {$IFDEF MACOS} name '_JsObjectDeleteProperty' {$ENDIF};
+
+/// <summary>
+///     Gets a property descriptor for an object's own property.
+/// </summary>
+/// <remarks>
+///     Requires an active script context.
+/// </remarks>
+/// <param name="object">The object that has the property.</param>
+/// <param name="key">The key (JavascriptString) to the property.</param>
+/// <param name="propertyDescriptor">The property descriptor.</param>
+/// <returns>
+///     The code <c>JsNoError</c> if the operation succeeded, a failure code otherwise.
+/// </returns>
+function JsObjectGetOwnPropertyDescriptor(obj: JsValueRef; key: JsValueRef; var propertyDescriptor: JsValueRef): JsErrorCode;
+  stdcall; external CHAKRA_LIB {$IFDEF MACOS} name '_JsObjectGetOwnPropertyDescriptor' {$ENDIF};
+
+/// <summary>
+///     Determines whether an object has a non-inherited property.
+/// </summary>
+/// <remarks>
+///     Requires an active script context.
+/// </remarks>
+/// <param name="object">The object that may contain the property.</param>
+/// <param name="key">The key (JavascriptString) to the property.</param>
+/// <param name="hasOwnProperty">Whether the object has the non-inherited property.</param>
+/// <returns>
+///     The code <c>JsNoError</c> if the operation succeeded, a failure code otherwise.
+/// </returns>
+function JsObjectHasOwnProperty(obj: JsValueRef; key: JsValueRef; var hasOwnProperty: boolean): JsErrorCode;
+  stdcall; external CHAKRA_LIB {$IFDEF MACOS} name '_JsObjectHasOwnProperty' {$ENDIF};
 
 implementation
 
